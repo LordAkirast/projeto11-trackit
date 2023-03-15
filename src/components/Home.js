@@ -47,19 +47,26 @@ const Forms = styled.form`
     display: flex;
     flex-direction: column;
 
-    input{
-        width: 303px;
-        height: 45px;
-        font-size: 19px;
-        border-color: #D4D4D4;
-        border-radius: 5px;
-        border-width: 1px;
+    input {
+    width: 303px;
+    height: 45px;
+    font-size: 19px;
+    border-color: #d4d4d4;
+    border-radius: 5px;
+    border-width: 1px;
+    margin-top: 6px;
+
+    &:first-child {
+      margin-top: 30px;
     }
+  }
     button{
         width: 311px;
         height: 45px;
         font-size: 19px;
         border-radius: 5px;
         border-width: 1px;
+        margin-top: 6px;
+        margin-bottom: 25px;
     }
 `
