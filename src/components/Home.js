@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { BrowserRouter, routes, route, Form, } from "react-router-dom";
+import { BrowserRouter, routes, route, Form, Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from './images/Logo.png';
 import { Link } from "react-router-dom";
@@ -9,13 +9,17 @@ import { Link } from "react-router-dom";
 export default function Home() {
     const [login, setlogin] = useState('')
     const [password, setpassword] = useState('')
+    const Navigate = useNavigate()
     return (
         <HomeDiv>
             <ImgLogo src={Logo} alt="Logo"></ImgLogo>
 
-            <Forms onSubmit={Login}>
+            <Forms onSubmit={(e) => {
+                e.preventDefault();
+                Login();
+            }}>
                 <input onChange={e => setlogin(e.target.value)} id='login' type='text' value={login} placeholder='Usuário' />
-                <input onChange={e => setpassword(e.target.value)} id='password' type='text' value={password} placeholder='Senha' />
+                <input onChange={e => setpassword(e.target.value)} id='password' type='password' value={password} placeholder='Senha' />
 
                 <button id="button" type="submit">Entrar</button>
             </Forms>
@@ -26,8 +30,27 @@ export default function Home() {
     )
 
     function Login() {
-        alert('Entrou')
+        const url = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login'
+        const promise = axios.post(url,
+            {
+                email: login,
+                password: password
+            })
+
+        promise.then((res) => {
+            console.log(res.data)
+            alert(`Bem vindo ${login}`)
+            Navigate('/habitos')
+        })
+        promise.catch((err) => {
+            if (err.response.status === 422) {
+                alert('Usuário não cadastrado!')
+            }
+            console.log(err.response.data)
+            alert('Ocorreu um erro!')
+        })
     }
+
 
 }
 
@@ -64,7 +87,7 @@ const Forms = styled.form`
     border-width: 1px;
     margin-top: 6px;
     background-color: white;
-    color: #DBDBDB;
+    color: black;
 
     &:first-child {
       margin-top: 30px;

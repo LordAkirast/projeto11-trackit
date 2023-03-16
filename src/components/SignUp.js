@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { BrowserRouter, routes, route, Form } from "react-router-dom";
+import { BrowserRouter, routes, route, Form, Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from './images/Logo.png';
 import Visibility from './images/visibility.png'
@@ -12,6 +12,7 @@ export default function SignUp() {
     const [name, setname] = useState('')
     const [photo, setphoto] = useState('')
     const [showPass, setshowPass] = useState(1)
+    const Navigate = useNavigate()
 
 
 
@@ -60,6 +61,7 @@ export default function SignUp() {
             setname('')
             setpassword('')
             setphoto('')
+            Navigate('/')
         })
         promise.catch((err) => {
             if (err.response.status === 409) {
