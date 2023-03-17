@@ -1,13 +1,19 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { BrowserRouter, routes, route, Form } from "react-router-dom";
 import styled from "styled-components";
+import UserContext from "./contexts/UserPhoto";
+
+
 
 export default function Habits() {
 
+    const {user} = useContext(UserContext)
+
+
     return (
         <>
-            <NavBar>trackit <img src="a" alt="a"></img></NavBar>
+            <NavBar>trackit <img src={user} alt="a"></img></NavBar>
             <HomeDiv>
                 <HabitsDiv>
                     <MyHabits>
@@ -18,7 +24,7 @@ export default function Habits() {
                 </HabitsDiv>
 
             </HomeDiv>
-            <Footer>Habitos | <p>Icone</p> | Histórico</Footer>
+            <Footer>Habitos | <p>Hoje</p> | Histórico</Footer>
         </>
 
     )
@@ -36,6 +42,12 @@ position: fixed;
 top: 0;
 font-family: 'Playball', cursive;
 font-size: 38px;
+
+img {
+    width: 51px;
+    height: 51px;
+    border-radius: 100px;
+}
 
 `
 

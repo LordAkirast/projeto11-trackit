@@ -1,18 +1,21 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { BrowserRouter, routes, route, Form, Navigate, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Logo from './images/Logo.png';
 import Visibility from './images/visibility.png'
 import Invisibility from './images/visibility_off.png'
+import UserContext from "./contexts/UserPhoto";
 
-export default function SignUp() {
+export default function SignUp({seturl}) {
     const [login, setlogin] = useState('')
     const [password, setpassword] = useState('')
     const [name, setname] = useState('')
     const [photo, setphoto] = useState('')
     const [showPass, setshowPass] = useState(1)
     const Navigate = useNavigate()
+
+    const {user} = useContext(UserContext)
 
 
 
@@ -22,8 +25,6 @@ export default function SignUp() {
     return (
         <HomeDiv>
             <ImgLogo src={Logo} alt="Logo"></ImgLogo>
-
-
 
 
             <Forms onSubmit={(e) => {
@@ -61,6 +62,7 @@ export default function SignUp() {
             setname('')
             setpassword('')
             setphoto('')
+            seturl(photo)
             Navigate('/')
         })
         promise.catch((err) => {
