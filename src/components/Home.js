@@ -6,7 +6,7 @@ import Logo from './images/Logo.png';
 import { Link } from "react-router-dom";
 
 
-export default function Home() {
+export default function Home({settoken}) {
     const [login, setlogin] = useState('')
     const [password, setpassword] = useState('')
     const Navigate = useNavigate()
@@ -40,6 +40,8 @@ export default function Home() {
         promise.then((res) => {
             console.log(res.data)
             alert(`Bem vindo ${login}`)
+            settoken(res.data.token)
+            console.log(res.data.token)
             Navigate('/habitos')
         })
         promise.catch((err) => {

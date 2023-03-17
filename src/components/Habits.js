@@ -3,33 +3,39 @@ import { useContext, useState } from "react";
 import { BrowserRouter, routes, route, Form } from "react-router-dom";
 import styled from "styled-components";
 import UserContext from "./contexts/UserPhoto";
+import TokenContext from "./contexts/Token";
 
 
 
-export default function Habits() {
+export default function Habits({token}) {
 
     const { user } = useContext(UserContext)
     const [create, setcreate] = useState(0)
     const weekday = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
+    const [habitName, sethabitName] = useState('')
+    const [weekSelection, setweekSelection] = useState([])
 
 
     return (
         <>
-            <NavBar>trackit <img src={user} alt="a"></img></NavBar>
+            <NavBar onClick={debug}>trackit <img src={user} alt="a"></img></NavBar>
             <HomeDiv>
                 <HabitsDiv>
                     <MyHabits>
                         <div>Meus Habitos</div> <p onClick={creation}>+</p>
                     </MyHabits>
+                    
                     {create === 1 ? <HabitCreate>
+                        
                         <Forms onSubmit={(e) => {
                             e.preventDefault();
                         }}>
 
-                            <input required={true} id='habitName' type='text' placeholder='Nome do Hábito' />
-                            <div>{weekday.map(week => <p>{week}</p>)}</div>
+                            <input required={true} onChange={e => sethabitName(e.target.value)} value={habitName} id='habitName' type='text' placeholder='Nome do Hábito' />
+                            <div>{weekday.map((week, index) => <p key={index} onClick={() => setweekSelection([...weekSelection, index === 0 ? 7 : index])}>{week}</p>)}</div>
+
                             <Buttons>
-                                <button>Cancelar</button> <button>Salvar</button>
+                                <button onClick={creation}>Cancelar</button> <button onClick={createHabit}>Salvar</button>
                             </Buttons>
 
                         </Forms>
@@ -47,7 +53,44 @@ export default function Habits() {
 
     function creation() {
         create === 0 ? setcreate(1) : setcreate(0)
+        sethabitName('')
+        setweekSelection([])
 
+    }
+
+    function debug() {
+        console.log(weekSelection)
+        console.log(habitName)
+    }
+
+
+    function createHabit() {
+        const url = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
+        const TOKEN = `${token}`
+        const config = {
+            headers: {
+                Authorization: `Bearer ${TOKEN}`
+            }
+        }
+        const promise = axios.post(url,
+            {
+                name: habitName,
+                days: weekSelection,
+            },
+            config
+        );
+
+        promise.then((res) => {
+            alert('Habito Criado!')
+           
+        })
+        promise.catch((err) => {
+            if (err.response.status === 409) {
+                alert('Usuário já cadastrado!')
+            }
+            console.log(err.response.data.details)
+            alert('Ocorreu um erro ao cadastrar!' + err.response.data.details)
+        })
     }
 }
 
