@@ -69,8 +69,8 @@ export default function SignUp({seturl}) {
             if (err.response.status === 409) {
                 alert('Usuário já cadastrado!')
             }
-            console.log(err.response.data)
-            alert('Ocorreu um erro ao cadastrar!')
+            console.log(err.response.data.details)
+            alert('Ocorreu um erro ao cadastrar!' + err.response.data.details)
         })
     }
 
@@ -88,7 +88,7 @@ export default function SignUp({seturl}) {
 const HomeDiv = styled.div`
 width: 375px;
 height: 667px;
-background-color: aqua;
+background-color: #F2F2F2;
 display: flex;
 flex-direction: column;
 justify-content: center;

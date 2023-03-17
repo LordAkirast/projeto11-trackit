@@ -8,7 +8,9 @@ import UserContext from "./contexts/UserPhoto";
 
 export default function Habits() {
 
-    const {user} = useContext(UserContext)
+    const { user } = useContext(UserContext)
+    const [create, setcreate] = useState(0)
+    const weekday = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
 
 
     return (
@@ -17,9 +19,22 @@ export default function Habits() {
             <HomeDiv>
                 <HabitsDiv>
                     <MyHabits>
-                        <div>Meus Habitos</div> <p>+</p>
+                        <div>Meus Habitos</div> <p onClick={creation}>+</p>
                     </MyHabits>
-                    <p>Você não tem nenhum hábito <br/> cadastrado ainda. Adicione um hábito <br/> para começar a trackear!</p>
+                    {create === 1 ? <HabitCreate>
+                        <Forms onSubmit={(e) => {
+                            e.preventDefault();
+                        }}>
+
+                            <input required={true} id='habitName' type='text' placeholder='Nome do Hábito' />
+                            <div>{weekday.map(week => <p>{week}</p>)}</div>
+                            <Buttons>
+                                <button>Cancelar</button> <button>Salvar</button>
+                            </Buttons>
+
+                        </Forms>
+                    </HabitCreate> : ''}
+                    <p>Você não tem nenhum hábito <br /> cadastrado ainda. Adicione um hábito <br /> para começar a trackear!</p>
 
                 </HabitsDiv>
 
@@ -28,6 +43,12 @@ export default function Habits() {
         </>
 
     )
+
+
+    function creation() {
+        create === 0 ? setcreate(1) : setcreate(0)
+
+    }
 }
 
 const NavBar = styled.div`
@@ -69,6 +90,47 @@ p {
     color: #666666;
 }`
 
+
+const HabitCreate = styled.div`
+width: 340px;
+height: 180px;
+background-color: white;
+display: flex;
+justify-content: center;
+align-items: baseline;
+`
+
+
+const Forms = styled.form`
+input{
+    width: 303px;
+    height: 45px;
+    margin-top: 18px;
+}
+
+div {
+    display: flex;
+    flex-direction: row;
+}
+
+p {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+`
+
+const Buttons = styled.div`
+background-color: white;
+justify-content: space-around;
+`
+
+
 const MyHabits = styled.div`
 display: flex;
 justify-content: space-around;
@@ -92,6 +154,7 @@ p{
     display: flex;
     margin-left: 15px;
     border-radius: 5px;
+    cursor: pointer;
 }
 `
 

@@ -58,7 +58,7 @@ export default function Home() {
 const HomeDiv = styled.div`
 width: 375px;
 height: 667px;
-background-color: aqua;
+background-color: white;
 display: flex;
 flex-direction: column;
 justify-content: center;
