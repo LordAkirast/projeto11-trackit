@@ -4,16 +4,20 @@ import { BrowserRouter, routes, route, Form } from "react-router-dom";
 import styled from "styled-components";
 import UserContext from "./contexts/UserPhoto";
 import TokenContext from "./contexts/Token";
+import { useEffect } from "react";
 
 
 
-export default function Habits({token}) {
+export default function Habits({ token }) {
 
     const { user } = useContext(UserContext)
     const [create, setcreate] = useState(0)
     const weekday = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
     const [habitName, sethabitName] = useState('')
     const [weekSelection, setweekSelection] = useState([])
+    const [habitCount, sethabitCount] = useState(0)
+    const [habitsArray, sethabitsArray] = useState([])
+    
 
 
     return (
@@ -24,9 +28,9 @@ export default function Habits({token}) {
                     <MyHabits>
                         <div>Meus Habitos</div> <p onClick={creation}>+</p>
                     </MyHabits>
-                    
+
                     {create === 1 ? <HabitCreate>
-                        
+
                         <Forms onSubmit={(e) => {
                             e.preventDefault();
                         }}>
@@ -40,7 +44,25 @@ export default function Habits({token}) {
 
                         </Forms>
                     </HabitCreate> : ''}
-                    <p>Você não tem nenhum hábito <br /> cadastrado ainda. Adicione um hábito <br /> para começar a trackear!</p>
+
+
+                    {habitCount === 1 ?
+                        habitsArray.map((habit) => (
+                            <HabitCreated onDoubleClick={(event) => deleteHabit(event, habit.id)} key={habit.id}>
+                                <p>{habit.name}</p>
+                                <PWeekText>
+                                    {habit.days.includes(7) ? <p style={{ backgroundColor: '#CFCFCF', color: 'white', borderColor: '#CFCFCF', width: '30px', height: '30px', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>D</p> : <p>D</p>}
+                                    {habit.days.includes(1) ? <p style={{ backgroundColor: '#CFCFCF', color: 'white', borderColor: '#CFCFCF', width: '30px', height: '30px', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>S</p> : <p>S</p>}
+                                    {habit.days.includes(2) ? <p style={{ backgroundColor: '#CFCFCF', color: 'white', borderColor: '#CFCFCF', width: '30px', height: '30px', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>T</p> : <p>T</p>}
+                                    {habit.days.includes(3) ? <p style={{ backgroundColor: '#CFCFCF', color: 'white', borderColor: '#CFCFCF', width: '30px', height: '30px', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Q</p> : <p>Q</p>}
+                                    {habit.days.includes(4) ? <p style={{ backgroundColor: '#CFCFCF', color: 'white', borderColor: '#CFCFCF', width: '30px', height: '30px', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>Q</p> : <p>Q</p>}
+                                    {habit.days.includes(5) ? <p style={{ backgroundColor: '#CFCFCF', color: 'white', borderColor: '#CFCFCF', width: '30px', height: '30px', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>S</p> : <p>S</p>}
+                                    {habit.days.includes(6) ? <p style={{ backgroundColor: '#CFCFCF', color: 'white', borderColor: '#CFCFCF', width: '30px', height: '30px', borderRadius: '5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>S</p> : <p>S</p>}
+                                </PWeekText>
+                            </HabitCreated>
+                        )) : <p>Você não tem nenhum hábito <br /> cadastrado ainda. Adicione um hábito <br /> para começar a trackear!</p>
+                    }
+
 
                 </HabitsDiv>
 
@@ -61,7 +83,37 @@ export default function Habits({token}) {
     function debug() {
         console.log(weekSelection)
         console.log(habitName)
+        getHabits()
+        sethabitCount(habitCount === 0 ? 1 : 0)
     }
+
+    function getHabits() {
+        const url = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
+        const TOKEN = `${token}`
+        const config = {
+            headers: {
+                Authorization: `Bearer ${TOKEN}`
+            }
+        }
+        const promise = axios.get(url,
+            config
+        );
+
+        promise.then((res) => {
+            alert('Requisição com SUcesso')
+            sethabitsArray(res.data)
+            console.log(res.data)
+
+        })
+        promise.catch((err) => {
+            if (err.response.status === 409) {
+                alert('Usuário já cadastrado!')
+            }
+            console.log(err.response.data.details)
+            alert('Ocorreu um erro ao requisitar hábitos' + err.response.data.details)
+        })
+    }
+
 
 
     function createHabit() {
@@ -82,7 +134,7 @@ export default function Habits({token}) {
 
         promise.then((res) => {
             alert('Habito Criado!')
-           
+
         })
         promise.catch((err) => {
             if (err.response.status === 409) {
@@ -92,7 +144,40 @@ export default function Habits({token}) {
             alert('Ocorreu um erro ao cadastrar!' + err.response.data.details)
         })
     }
+
+
+    function deleteHabit(event, id) {
+        const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`;
+        const TOKEN = `${token}`;
+
+        const config = {
+          headers: {
+            Authorization: `Bearer ${TOKEN}`
+          }
+        }
+
+        const promise = axios.delete(url,
+            config
+        );
+
+        promise.then((res) => {
+            alert('Habito Deletado!')
+            getHabits()
+
+        })
+        promise.catch((err) => {
+            if (err.response.status === 409) {
+                alert('Usuário já cadastrado!')
+            }
+            console.log(err.response.data.details)
+            alert('Ocorreu um erro ao deletar!' + err.response.data.details)
+            console.log(token)
+        })
+      
+        
+      }
 }
+
 
 const NavBar = styled.div`
 width: 375px;
@@ -133,6 +218,19 @@ p {
     color: #666666;
 }`
 
+const PWeekText = styled.div`
+display: flex;
+
+ p {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+ }
+`
 
 const HabitCreate = styled.div`
 width: 340px;
@@ -141,6 +239,17 @@ background-color: white;
 display: flex;
 justify-content: center;
 align-items: baseline;
+`
+
+const HabitCreated = styled.div`
+width: 340px;
+height:91px;
+background-color: white;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+margin-bottom: 10px;
 `
 
 
