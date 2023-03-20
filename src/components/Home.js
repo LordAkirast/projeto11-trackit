@@ -41,7 +41,7 @@ export default function Home({settoken}) {
             console.log(res.data)
             alert(`Bem vindo ${login}`)
             settoken(res.data.token)
-            console.log(res.data.token)
+            console.log(res.data.tokena)
             Navigate('/habitos')
         })
         promise.catch((err) => {
@@ -55,7 +55,6 @@ export default function Home({settoken}) {
 
 
 }
-
 
 const HomeDiv = styled.div`
 width: 375px;
